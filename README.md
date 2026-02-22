@@ -17,4 +17,15 @@ A SQL project to manage library books, students, and issued books.
 
 ## Stored Procedures
 - stored procedure to issue a book:
-- issued_books_procedure(issued_id,student_id, book_id,issued_date,due_date,return_date,status)  
+- issued_books_procedure(issued_id,student_id, book_id,issued_date,due_date,return_date,status)
+  ## screenshots
+  ![Books Table](screenshots/books_table.png)
+  ![Students Table](screenshots/students_table.png)
+  ![ Issued Books table](screenshots/issued_books_table.png)
+  ![Issued Books](screenshots/issued_books.png)
+  ![Fines](screenshots/overdue_and_fines.png)
+  ![Most Issued Book](screenshots/most_issued_book.png)
+  ![Index](screenshots/index_on_book_name.png)
+  ![Views](screenshots/view.png)
+  ![Stored Procedures](screenshots/stored_procedure.png)
+

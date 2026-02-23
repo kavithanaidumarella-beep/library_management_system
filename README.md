@@ -6,7 +6,7 @@ A SQL project to manage library books, students, and issued books using MySQL.
 
 ## ✅ Project Description
 
-This project simulates a library management system. It manages:
+This project simulates a library management system. It manages;
 
 - Books  
 - Students  

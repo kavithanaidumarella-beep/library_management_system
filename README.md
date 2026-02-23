@@ -15,9 +15,9 @@ This project simulates a library management system. It manages;
 
 
 ## 📄 Tables
-## 1.code
 
---books table
+
+'''books table
 
 CREATE TABLE Books (
     book_id INT PRIMARY KEY,

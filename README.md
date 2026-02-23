@@ -1,23 +1,14 @@
-# Library Management System (SQL, MySQL)
 
-A SQL project to manage library books, students, and issued books using MySQL.
+# 📚 Library Management System (SQL)
+
+This project manages books, students, and issued books in a library. It includes tables, sample data, queries, indexes, views, and stored procedures.
 
 ---
 
-## ✅ Project Description
+## 🏷 Tables
 
-This project simulates a library management system. It manages;
-
-- Books  
-- Students  
-- Issued books and returns  
-
-
-
-## 📄 Tables
-
---books table
-
+```sql
+-- Books table
 CREATE TABLE Books (
     book_id INT PRIMARY KEY,
     book_name VARCHAR(100),
@@ -26,8 +17,7 @@ CREATE TABLE Books (
     available_copies INT
 );
 
---students table(students who registered)
- 
+-- Students table
 CREATE TABLE Students (
     student_id INT PRIMARY KEY,
     student_name VARCHAR(100),
@@ -35,9 +25,8 @@ CREATE TABLE Students (
     join_date DATE
 );
 
--- issued books table
-
- CREATE TABLE Issued_Books (
+-- Issued Books table
+CREATE TABLE Issued_Books (
     issued_id INT PRIMARY KEY,
     student_id INT,
     book_id INT,
@@ -48,9 +37,7 @@ CREATE TABLE Students (
     FOREIGN KEY (student_id) REFERENCES Students(student_id),
     FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
-
---sample data in books table
-
+-- Sample data in Books
 INSERT INTO Books (book_id, book_name, author_name, total_copies, available_copies) VALUES
 (101, 'The Alchemist', 'Paulo Coelho', 5, 5),
 (102, 'Harry Potter', 'J.K. Rowling', 10, 10),
@@ -58,72 +45,71 @@ INSERT INTO Books (book_id, book_name, author_name, total_copies, available_copi
 (104, 'Rich Dad Poor Dad', 'Robert Kiyosaki', 6, 6),
 (105, 'Atomic Habits', 'James Clear', 8, 8);
 
--- sample data in students table(who are registerd)
-
+-- Sample data in Students
 INSERT INTO Students (student_id, student_name, email_id, join_date) VALUES
-(201, 'Alice Johnson', 'alice@gmail.com',  '2026-01-10'),
-(202, 'Bob Smith', 'bob@gmail.com',  '2026-01-12'),
-(203, 'Charlie Brown', 'charlie@gmail.com',  '2026-01-15');
+(201, 'Alice Johnson', 'alice@gmail.com', '2026-01-10'),
+(202, 'Bob Smith', 'bob@gmail.com', '2026-01-12'),
+(203, 'Charlie Brown', 'charlie@gmail.com', '2026-01-15');
 
---sample data in issued books table
-
+-- Sample data in Issued Books
 INSERT INTO Issued_Books (issued_id, student_id, book_id, issued_date, due_date, return_date, status) VALUES
 (301, 201, 101, '2026-02-01', '2026-02-10', NULL, 'issued'),
 (302, 202, 102, '2026-02-02', '2026-02-11', '2026-02-10', 'returned'),
 (303, 203, 103, '2026-02-03', '2026-02-12', '2026-02-15', 'fine');
 
---sample queries
+-- 1. Show issued books
+SELECT book_name AS issued_books
+FROM books
+WHERE book_id IN (SELECT book_id FROM issued_books);
 
---1.show issued books
-select book_name as issued_books from books
-where book_id in (select book_id from issued_books);
+-- 2. Calculate fines (2 rupees per day)
+SELECT b.book_name AS overdue_books,
+       DATEDIFF(i.return_date, i.due_date) * 2 AS fine
+FROM books b
+JOIN issued_books i ON b.book_id = i.book_id
+WHERE i.return_date > i.due_date;
 
---2.calculating fines
--- fine per day is 2rupees
-select b.book_name as overdue_books,DATEDIFF(i.return_date,i.due_date)*2 as fine from books b
-join issued_books i on b.book_id=i.book_id
-where i.return_date>i.due_date;
---3.finding most issued book
-select b.book_name,count(i.book_id) as count from issued_books i
-join books b on b.book_id=i.book_id
-group by i.book_id order by count(i.book_id) desc limit 1;
+-- 3. Most issued book
+SELECT b.book_name, COUNT(i.book_id) AS count
+FROM issued_books i
+JOIN books b ON b.book_id = i.book_id
+GROUP BY i.book_id
+ORDER BY COUNT(i.book_id) DESC
+LIMIT 1;
 
---index
+-- Create index on book_name
+CREATE INDEX index_book_name ON books(book_name);
+-- Books in the library
+SELECT book_name FROM books;
 
--- create index on book_name
-create index index_book_name on books(book_name);
--- books in the library
-select book_name from books;
+-- View on current issued books
+CREATE  VIEW current_issued_books AS
+SELECT s.student_name, i.book_id, i.issued_id
+FROM issued_books i
+JOIN students s ON i.student_id = s.student_id
+WHERE i.status='issued';
 
--- view
-
--- view on current issued books
-create view current_issued_books as
-select s.student_name,i.book_id,i.issued_id  from issued_books i
-join students s on i.student_id=s.student_id
-where i.status='issued';
-select *from current_issued_books;
-
---stored procedure
-
--- stored procedure to store an issued book in issued books table
-
-delimiter //
-create procedure issued_book_procedure(
-IN p_issued_id int,
-IN p_student_id int,
-IN p_book_id int,
-IN p_issued_date date,
-IN p_due_date date,
-IN p_return_date date,
-IN p_status varchar(50)
+-- Test the view
+SELECT * FROM current_issued_books;
+-- Stored procedure to insert an issued book
+DELIMITER //
+CREATE PROCEDURE issued_book_procedure(
+    IN p_issued_id INT,
+    IN p_student_id INT,
+    IN p_book_id INT,
+    IN p_issued_date DATE,
+    IN p_due_date DATE,
+    IN p_return_date DATE,
+    IN p_status VARCHAR(50)
 )
-begin
-insert into issued_books values(p_issued_id,p_student_id,p_book_id,p_issued_date,p_due_date,p_return_date,p_status);
-end
-//
-call issued_books_procedure(30,,203,105,'2025-09-12','2025-09-27',NULL,'issued');
-select *from issued_books;
+BEGIN
+    INSERT INTO issued_books(issued_id, student_id, book_id, issued_date, due_date, return_date, status)
+    VALUES(p_issued_id, p_student_id, p_book_id, p_issued_date, p_due_date, p_return_date, p_status);
+END //
+DELIMITER ;
 
+-- Call stored procedure example
+CALL issued_book_procedure(304, 203, 105, '2026-09-12', '2026-09-27', NULL, 'issued');
 
-
+-- Check Issued_Books table after procedure
+SELECT * FROM issued_books;

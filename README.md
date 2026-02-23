@@ -16,8 +16,7 @@ This project simulates a library management system. It manages:
 
 ## 📄 Tables
 
-### 1. Books Table
-```sql
+### 1.books table
 CREATE TABLE Books (
     book_id INT PRIMARY KEY,
     book_name VARCHAR(100),

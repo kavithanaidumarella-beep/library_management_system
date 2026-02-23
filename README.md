@@ -16,7 +16,8 @@ This project simulates a library management system. It manages:
 
 ## 📄 Tables
 
-### 1.books table
+--books table
+
 CREATE TABLE Books (
     book_id INT PRIMARY KEY,
     book_name VARCHAR(100),
@@ -25,7 +26,7 @@ CREATE TABLE Books (
     available_copies INT
 );
 
-### 2.students table(who are registered)
+--students table(students who registered)
  
 CREATE TABLE Students (
     student_id INT PRIMARY KEY,
@@ -34,7 +35,7 @@ CREATE TABLE Students (
     join_date DATE
 );
 
-### 3.issued books table
+-- issued books table
 
  CREATE TABLE Issued_Books (
     issued_id INT PRIMARY KEY,
@@ -48,7 +49,7 @@ CREATE TABLE Students (
     FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
 
-###  sample data in books table
+--sample data in books table
 
 INSERT INTO Books (book_id, book_name, author_name, total_copies, available_copies) VALUES
 (101, 'The Alchemist', 'Paulo Coelho', 5, 5),
@@ -57,21 +58,21 @@ INSERT INTO Books (book_id, book_name, author_name, total_copies, available_copi
 (104, 'Rich Dad Poor Dad', 'Robert Kiyosaki', 6, 6),
 (105, 'Atomic Habits', 'James Clear', 8, 8);
 
-### sample data in students table(who are registerd)
+-- sample data in students table(who are registerd)
 
 INSERT INTO Students (student_id, student_name, email_id, join_date) VALUES
 (201, 'Alice Johnson', 'alice@gmail.com',  '2026-01-10'),
 (202, 'Bob Smith', 'bob@gmail.com',  '2026-01-12'),
 (203, 'Charlie Brown', 'charlie@gmail.com',  '2026-01-15');
 
-### sample data in issued books table
+--sample data in issued books table
 
 INSERT INTO Issued_Books (issued_id, student_id, book_id, issued_date, due_date, return_date, status) VALUES
 (301, 201, 101, '2026-02-01', '2026-02-10', NULL, 'issued'),
 (302, 202, 102, '2026-02-02', '2026-02-11', '2026-02-10', 'returned'),
 (303, 203, 103, '2026-02-03', '2026-02-12', '2026-02-15', 'fine');
 
-### sample queries
+--sample queries
 
 --1.show issued books
 select book_name as issued_books from books
@@ -87,14 +88,14 @@ select b.book_name,count(i.book_id) as count from issued_books i
 join books b on b.book_id=i.book_id
 group by i.book_id order by count(i.book_id) desc limit 1;
 
-### index
+--index
 
 -- create index on book_name
 create index index_book_name on books(book_name);
 -- books in the library
 select book_name from books;
 
-### view
+-- view
 
 -- view on current issued books
 create view current_issued_books as
@@ -103,7 +104,7 @@ join students s on i.student_id=s.student_id
 where i.status='issued';
 select *from current_issued_books;
 
-### stored procedure
+--stored procedure
 
 -- stored procedure to store an issued book in issued books table
 

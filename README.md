@@ -16,7 +16,6 @@ This project simulates a library management system. It manages;
 
 ## 📄 Tables
 
-'''sql
 --books table
 
 CREATE TABLE Books (
@@ -124,7 +123,7 @@ insert into issued_books values(p_issued_id,p_student_id,p_book_id,p_issued_date
 end
 //
 call issued_books_procedure(30,,203,105,'2025-09-12','2025-09-27',NULL,'issued');
-select *from isssued_books;
+select *from issued_books;
 
 
 
